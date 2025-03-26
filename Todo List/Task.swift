@@ -7,14 +7,14 @@
 
 import Foundation
 
-struct Task {
-    var id: Int
+struct Task: Codable {
     var title: String
     var isCompleted: Bool = false
     var dueDate: Date?
     var priority: Priority = .low
+    var id = UUID()
     
-    enum Priority {
+    enum Priority: Comparable, Codable {
         case low, medium, high
     }
 }

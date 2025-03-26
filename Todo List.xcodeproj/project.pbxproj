@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C3C30E12D93F6E600333030 /* TaskItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3C30E02D93F6E600333030 /* TaskItemView.swift */; };
 		5C9C7DEB2D928CDA00E1828F /* Todo_ListApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9C7DEA2D928CDA00E1828F /* Todo_ListApp.swift */; };
-		5C9C7DED2D928CDA00E1828F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9C7DEC2D928CDA00E1828F /* ContentView.swift */; };
+		5C9C7DED2D928CDA00E1828F /* TodoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9C7DEC2D928CDA00E1828F /* TodoListView.swift */; };
 		5C9C7DEF2D928CDB00E1828F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C9C7DEE2D928CDB00E1828F /* Assets.xcassets */; };
 		5C9C7DF22D928CDB00E1828F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C9C7DF12D928CDB00E1828F /* Preview Assets.xcassets */; };
 		5C9C7DF92D928F6000E1828F /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9C7DF82D928F6000E1828F /* Task.swift */; };
@@ -16,9 +17,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5C3C30E02D93F6E600333030 /* TaskItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskItemView.swift; sourceTree = "<group>"; };
 		5C9C7DE72D928CDA00E1828F /* Todo List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Todo List.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C9C7DEA2D928CDA00E1828F /* Todo_ListApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo_ListApp.swift; sourceTree = "<group>"; };
-		5C9C7DEC2D928CDA00E1828F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		5C9C7DEC2D928CDA00E1828F /* TodoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListView.swift; sourceTree = "<group>"; };
 		5C9C7DEE2D928CDB00E1828F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5C9C7DF12D928CDB00E1828F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5C9C7DF82D928F6000E1828F /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
@@ -56,7 +58,8 @@
 			isa = PBXGroup;
 			children = (
 				5C9C7DEA2D928CDA00E1828F /* Todo_ListApp.swift */,
-				5C9C7DEC2D928CDA00E1828F /* ContentView.swift */,
+				5C9C7DEC2D928CDA00E1828F /* TodoListView.swift */,
+				5C3C30E02D93F6E600333030 /* TaskItemView.swift */,
 				5C9C7DEE2D928CDB00E1828F /* Assets.xcassets */,
 				5C9C7DF02D928CDB00E1828F /* Preview Content */,
 				5C9C7DF82D928F6000E1828F /* Task.swift */,
@@ -143,7 +146,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5C9C7DED2D928CDA00E1828F /* ContentView.swift in Sources */,
+				5C3C30E12D93F6E600333030 /* TaskItemView.swift in Sources */,
+				5C9C7DED2D928CDA00E1828F /* TodoListView.swift in Sources */,
 				5C9C7DF92D928F6000E1828F /* Task.swift in Sources */,
 				5C9C7DEB2D928CDA00E1828F /* Todo_ListApp.swift in Sources */,
 				5C9C7DFB2D92948400E1828F /* TodoList.swift in Sources */,
@@ -280,6 +284,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Todo List/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -308,6 +313,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Todo List/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

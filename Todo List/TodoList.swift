@@ -7,8 +7,64 @@
 
 import Foundation
 
+extension UserDefaults {
+    func store(_ value: [Task],to key: String) throws {
+        if let encodedTask = try? JSONEncoder().encode(value) {
+            UserDefaults.standard.set(encodedTask, forKey: "savedTask")
+        } else {
+            throw CocoaError(.fileWriteUnknown)
+        }
+    }
+    
+    func getDataTasks(from key: String) throws -> [Task] {
+        if let savedTaskData = UserDefaults.standard.data(forKey: key),
+           let savedTask = try? JSONDecoder().decode([Task].self, from: savedTaskData) {
+            return savedTask
+        }
+        throw CocoaError(.fileWriteUnknown)
+    }
+}
+
+
+extension Array where Element == Task {
+   
+}
+
 class TodoList: ObservableObject {
-    @Published var tasks: [Task] = []
+    private var tasks: [Task]     {
+        get {
+            // This should always get the data if not crash the app
+            return try! UserDefaults.standard.getDataTasks(from: "TodolistTasks")
+        }
+        set {
+            try! UserDefaults.standard.store(newValue, to: "TodolistTasks")
+            objectWillChange.send()
+        }
+    }
+    
+    // user will access to this variable
+    var currentTask: [Task] {
+        onSorted ? sortedTask : tasks
+    }
+    
+    private var sortedTask: [Task] {
+        tasks.sorted {
+            if $0.priority == $1.priority {
+                guard let dueDate1 = $0.dueDate, let dueDate2 = $1.dueDate else {
+                    return $0.dueDate != nil // Tasks with a due date come first
+                }
+                return dueDate1 < dueDate2 // Earlier due date first
+            }
+            return $0.priority > $1.priority // Higher priority first
+        }
+    }
+    
+    private var onSorted: Bool = false {
+        // Trigger update for currentTask
+        didSet {
+            objectWillChange.send()
+        }
+    }
     
     private var lastIndexTaskId = 0
     
@@ -16,7 +72,7 @@ class TodoList: ObservableObject {
         tasks.insert(task, at: 0)
     }
     
-    func removeTask(id: Int) {
+    func removeTask(id: UUID) {
         if let index = tasks.firstIndex(where: {$0.id == id}) {
             tasks.remove(at: index)
         }
@@ -35,6 +91,6 @@ class TodoList: ObservableObject {
     }
     
     func sortTask() {
-        
+        onSorted = true
     }
 }
