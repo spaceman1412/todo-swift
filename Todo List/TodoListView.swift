@@ -10,6 +10,15 @@ import SwiftUI
 struct TodoListView: View {
     @EnvironmentObject var todoList: TodoList
     @State private var newTask = Task(title: "")
+    @State private var onShowInline = false
+    {
+        didSet {
+            onFocusInline.toggle()
+        }
+    }
+    @FocusState private var onFocusInline: Bool
+    
+    @Namespace private var bottomID // A unique identifier for the last item
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -28,7 +37,8 @@ struct TodoListView: View {
             Spacer()
             
             Button(action: {
-                print("Add Task")
+                //Trigger inline add task
+                onShowInline = true
             }) {
                 Image(systemName: "plus")
             }
@@ -49,17 +59,37 @@ struct TodoListView: View {
     }
     
     var taskList: some View {
-        List {
-            ForEach($todoList.currentTask) { task in
-                TaskItemView(task: task, handleSubmit: handleSubmitTask)
+        ScrollViewReader { proxy in
+            List {
+                ForEach($todoList.currentTask) { task in
+                    TaskItemView(task: task, handleSubmit: handleSubmitTask)
+                }
+                
+                // Inline task
+                if(onShowInline) {
+                    TaskItemView(task: $newTask, handleSubmit: handleSubmitInline)
+                        .focused($onFocusInline)
+                }
+                
+                // Triggerable row to add task
+                Rectangle()
+                    .fill(Color.clear) // Invisible
+                    .contentShape(Rectangle()) // Ensures tap detection
+                    .id(bottomID)
+                    .onTapGesture {
+                        onShowInline = true
+                    }
             }
-            
-            // Inline task
-            TaskItemView(task: $newTask, handleSubmit: handleSubmitInline)
-            
-            // Triggerable row to add task
+            .listStyle(.plain)
+            .onChange(of: onShowInline) {
+                // Scroll to bottom if trigger add inline
+                if(onShowInline) {
+                    withAnimation {
+                        proxy.scrollTo(bottomID, anchor: .bottom)
+                    }
+                }
+            }
         }
-        .listStyle(.plain)
     }
     
     private func handleSubmitTask(_ task: Task) {
@@ -74,13 +104,13 @@ struct TodoListView: View {
         if(task.title != "") {
             // Add new task to the task list
             todoList.addTask(task)
-            // Reset the newTask to empty and renew id
+            // Reset the newTask and turn off inline
             newTask.title = ""
             newTask.id = UUID()
+            onShowInline = false
         }
+        // If task is empty not add to the task list and turn off the inline
+        onShowInline = false
     }
 }
 
-#Preview {
-    TodoListView()
-}
