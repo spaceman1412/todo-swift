@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct TaskItemView: View {
-    @Binding var isDone: Bool
-    @Binding var title: String
+    @Binding var task: Task
+    var handleSubmit: (_ task: Task) -> Void
     
     var body: some View {
         HStack {
@@ -22,27 +22,35 @@ struct TaskItemView: View {
     }
     
     private var textView: some View {
-        TextField("", text: $title)
-            .strikethrough(isDone, color: .gray)
-            .foregroundColor(isDone ? .gray : .primary)
+        TextField("", text: $task.title)
+            .strikethrough(task.isCompleted, color: .gray)
+            .foregroundColor(task.isCompleted ? .gray : .primary)
+            .onSubmit {
+                // Handle add task here
+                // Empty will ignore and remove inline task
+                // If not empty it will trigger add new task
+                // If the task already exist it will instead try to update the task
+                
+                // If the task existed
+                
+                // Handle editing
+                
+                // If the task is not exist
+                
+                // Call onSubmit handle here and left the algorithm for the parent
+                handleSubmit(task)
+            }
     }
     
     private var markButton: some View {
         Button(action: {
-            isDone.toggle()
+            task.isCompleted.toggle()
         }) {
-            Image(systemName: isDone ? "circle.inset.filled" : "circle")
-                .foregroundColor(isDone ? .orange : .gray)
+            Image(systemName: task.isCompleted ? "circle.inset.filled" : "circle")
+                .foregroundColor(task.isCompleted ? .orange : .gray)
                 .font(.title)
-                .animation(.easeInOut, value: isDone)
+                .animation(.easeInOut, value: task.isCompleted)
         }
         .buttonStyle(PlainButtonStyle()) // Remove default button styling
     }
-}
-
-#Preview {
-    @State var isDone = false
-    @State var title = "Task"
-    
-    return TaskItemView(isDone: $isDone, title: $title)
 }

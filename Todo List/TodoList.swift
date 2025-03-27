@@ -8,20 +8,17 @@
 import Foundation
 
 extension UserDefaults {
-    func store(_ value: [Task],to key: String) throws {
-        if let encodedTask = try? JSONEncoder().encode(value) {
-            UserDefaults.standard.set(encodedTask, forKey: "savedTask")
+    func tasks(forKey key: String) -> [Task] {
+        if let jsonData = data(forKey: key), let decodedPalettes = try? JSONDecoder().decode([Task].self, from: jsonData) {
+            return decodedPalettes
         } else {
-            throw CocoaError(.fileWriteUnknown)
+            return []
         }
     }
     
-    func getDataTasks(from key: String) throws -> [Task] {
-        if let savedTaskData = UserDefaults.standard.data(forKey: key),
-           let savedTask = try? JSONDecoder().decode([Task].self, from: savedTaskData) {
-            return savedTask
-        }
-        throw CocoaError(.fileWriteUnknown)
+    func set(_ tasks: [Task], forKey key: String) {
+        let data = try? JSONEncoder().encode(tasks)
+        set(data, forKey: key)
     }
 }
 
@@ -31,20 +28,28 @@ extension Array where Element == Task {
 }
 
 class TodoList: ObservableObject {
-    private var tasks: [Task]     {
+    private var tasks: [Task] {
         get {
-            // This should always get the data if not crash the app
-            return try! UserDefaults.standard.getDataTasks(from: "TodolistTasks")
+            let data = UserDefaults.standard.tasks(forKey: "TodolistTasks")
+            return data
         }
         set {
-            try! UserDefaults.standard.store(newValue, to: "TodolistTasks")
-            objectWillChange.send()
+            if(!newValue.isEmpty) {
+                UserDefaults.standard.set(newValue, forKey: "TodolistTasks")
+                print(newValue)
+                objectWillChange.send()
+            }
         }
     }
     
     // user will access to this variable
     var currentTask: [Task] {
-        onSorted ? sortedTask : tasks
+        get {
+            onSorted ? sortedTask : tasks
+        } set {
+            tasks = newValue
+            objectWillChange.send()
+        }
     }
     
     private var sortedTask: [Task] {
@@ -69,7 +74,7 @@ class TodoList: ObservableObject {
     private var lastIndexTaskId = 0
     
     func addTask(_ task: Task) {
-        tasks.insert(task, at: 0)
+        tasks.append(task)
     }
     
     func removeTask(id: UUID) {
