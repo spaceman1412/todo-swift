@@ -9,7 +9,13 @@ import SwiftUI
 
 struct TaskItemView: View {
     @Binding var task: Task
+    
+    
     var handleSubmit: (_ task: Task) -> Void
+    
+    //MARK: Pass down focusing state
+    @FocusState.Binding var focused: TodoListView.FocusField?
+    var equals: TodoListView.FocusField
     
     var body: some View {
         HStack {
@@ -25,18 +31,8 @@ struct TaskItemView: View {
         TextField("", text: $task.title)
             .strikethrough(task.isCompleted, color: .gray)
             .foregroundColor(task.isCompleted ? .gray : .primary)
+            .focused($focused, equals: equals)
             .onSubmit {
-                // Handle add task here
-                // Empty will ignore and remove inline task
-                // If not empty it will trigger add new task
-                // If the task already exist it will instead try to update the task
-                
-                // If the task existed
-                
-                // Handle editing
-                
-                // If the task is not exist
-                
                 // Call onSubmit handle here and left the algorithm for the parent
                 handleSubmit(task)
             }
@@ -51,6 +47,5 @@ struct TaskItemView: View {
                 .font(.title)
                 .animation(.easeInOut, value: task.isCompleted)
         }
-        .buttonStyle(PlainButtonStyle()) // Remove default button styling
     }
 }

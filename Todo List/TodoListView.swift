@@ -7,16 +7,25 @@
 
 import SwiftUI
 
+
+
 struct TodoListView: View {
     @EnvironmentObject var todoList: TodoList
     @State private var newTask = Task(title: "")
     @State private var onShowInline = false
     {
         didSet {
-            onFocusInline.toggle()
+            focus = .inline
+            // Auto reset when toggle onShowInline
+            resetInline()
         }
     }
-    @FocusState private var onFocusInline: Bool
+    
+    enum FocusField {
+        case inline, task
+    }
+    
+    @FocusState private var focus: FocusField?
     
     @Namespace private var bottomID // A unique identifier for the last item
 
@@ -30,6 +39,12 @@ struct TodoListView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .padding()
+        .onTapGesture {
+            // Cancel focus when tap outside
+            focus = nil
+            // Turn off the inline and reset inline
+            onShowInline = false
+        }
     }
     
     var header: some View {
@@ -58,17 +73,21 @@ struct TodoListView: View {
         Text("Todo List").font(.largeTitle).bold().foregroundStyle(.orange)
     }
     
+    private func resetInline() {
+        newTask.title = ""
+        newTask.id = UUID()
+    }
+    
     var taskList: some View {
         ScrollViewReader { proxy in
             List {
                 ForEach($todoList.currentTask) { task in
-                    TaskItemView(task: task, handleSubmit: handleSubmitTask)
+                    TaskItemView(task: task,handleSubmit: handleSubmitTask, focused: $focus, equals: .task )
                 }
                 
                 // Inline task
                 if(onShowInline) {
-                    TaskItemView(task: $newTask, handleSubmit: handleSubmitInline)
-                        .focused($onFocusInline)
+                    TaskItemView(task: $newTask,handleSubmit: handleSubmitInline, focused: $focus, equals: .inline)
                 }
                 
                 // Triggerable row to add task
@@ -104,13 +123,13 @@ struct TodoListView: View {
         if(task.title != "") {
             // Add new task to the task list
             todoList.addTask(task)
-            // Reset the newTask and turn off inline
-            newTask.title = ""
-            newTask.id = UUID()
+            // Reset the newTask and refocus help enable smooth flow when adding new task continously
+            resetInline()
+            focus = .inline
+        } else {
+            // If task is empty not add to the task list and turn off the inline
             onShowInline = false
         }
-        // If task is empty not add to the task list and turn off the inline
-        onShowInline = false
     }
 }
 

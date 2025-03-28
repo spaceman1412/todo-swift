@@ -36,7 +36,6 @@ class TodoList: ObservableObject {
         set {
             if(!newValue.isEmpty) {
                 UserDefaults.standard.set(newValue, forKey: "TodolistTasks")
-                print(newValue)
                 objectWillChange.send()
             }
         }
