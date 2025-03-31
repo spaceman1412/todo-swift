@@ -44,7 +44,7 @@ struct TaskItemView: View {
         }) {
             Image(systemName: task.isCompleted ? "circle.inset.filled" : "circle")
                 .foregroundColor(task.isCompleted ? .orange : .gray)
-                .font(.title)
+                .font(.title2)
                 .animation(.easeInOut, value: task.isCompleted)
         }
     }

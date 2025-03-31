@@ -14,6 +14,7 @@
 		5C9C7DF22D928CDB00E1828F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C9C7DF12D928CDB00E1828F /* Preview Assets.xcassets */; };
 		5C9C7DF92D928F6000E1828F /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9C7DF82D928F6000E1828F /* Task.swift */; };
 		5C9C7DFB2D92948400E1828F /* TodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9C7DFA2D92948400E1828F /* TodoList.swift */; };
+		5CD088AC2D9A714B00AFA59A /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CD088AB2D9A714B00AFA59A /* TestView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		5C9C7DF12D928CDB00E1828F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5C9C7DF82D928F6000E1828F /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		5C9C7DFA2D92948400E1828F /* TodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoList.swift; sourceTree = "<group>"; };
+		5CD088AB2D9A714B00AFA59A /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +61,7 @@
 			children = (
 				5C9C7DEA2D928CDA00E1828F /* Todo_ListApp.swift */,
 				5C9C7DEC2D928CDA00E1828F /* TodoListView.swift */,
+				5CD088AB2D9A714B00AFA59A /* TestView.swift */,
 				5C3C30E02D93F6E600333030 /* TaskItemView.swift */,
 				5C9C7DEE2D928CDB00E1828F /* Assets.xcassets */,
 				5C9C7DF02D928CDB00E1828F /* Preview Content */,
@@ -146,6 +149,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CD088AC2D9A714B00AFA59A /* TestView.swift in Sources */,
 				5C3C30E12D93F6E600333030 /* TaskItemView.swift in Sources */,
 				5C9C7DED2D928CDA00E1828F /* TodoListView.swift in Sources */,
 				5C9C7DF92D928F6000E1828F /* Task.swift in Sources */,
