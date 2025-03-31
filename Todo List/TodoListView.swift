@@ -30,10 +30,10 @@ struct TodoListView: View {
     @Namespace private var bottomID // A unique identifier for the last item
     
     let tapGesture = TapGesture()
-          .onEnded { _ in
+        .onEnded { _ in
             print("Menu tapped")
-          }
-
+        }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             header
@@ -66,12 +66,12 @@ struct TodoListView: View {
             Spacer()
             
             // This will show in case user is on editing textfield
-//            Button(action: {
-//                print("Done editing")
-//            }) {
-//                Text("Done")
-//            }
-//            .font(.title2)
+            //            Button(action: {
+            //                print("Done editing")
+            //            }) {
+            //                Text("Done")
+            //            }
+            //            .font(.title2)
         }.padding(.horizontal)
     }
     
@@ -86,52 +86,59 @@ struct TodoListView: View {
     
     var taskList: some View {
         ScrollViewReader { proxy in
-            List {
-                ForEach($todoList.currentTask, id: \.id) { task in
-                    TaskItemView(task: task,handleSubmit: handleSubmitTask, focused: $focus, equals: .task )
-                        .swipeActions() {
-                            Button(role: .destructive) {
-                                todoList.removeTask(id: task.id)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                            
-                            Button {
-                                print("Edit")
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
-                            }
+            GeometryReader { geometry in
+                VStack {
+                    List {
+                        ForEach($todoList.currentTask, id: \.id) { task in
+                            TaskItemView(task: task,handleSubmit: handleSubmitTask, focused: $focus, equals: .task )
+                                .swipeActions() {
+                                    Button(role: .destructive) {
+                                        todoList.removeTask(id: task.id)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                    
+                                    Button {
+                                        print("Edit")
+                                    } label: {
+                                        Label("Edit", systemImage: "pencil")
+                                    }
+                                }
                         }
-                }
-                
-                // Inline task
-                if(onShowInline) {
-                    TaskItemView(task: $newTask,handleSubmit: handleSubmitInline, focused: $focus, equals: .inline)
-                }
-                
-                // Triggerable row to add task and unfocus
-                Rectangle()
-                    .fill(Color.clear)  //Invisible
-                    .contentShape(Rectangle()) // Ensures tap detection
-                    .id(bottomID)
-                    .onTapGesture {
-                        if(focus != nil) {
-                            // Make unfocus area in bottom of the list
-                            focus = nil
-                        } else {
-                            // Trigger inline task to add
-                            onShowInline = true
+                        
+                        // Inline task
+                        if(onShowInline) {
+                            TaskItemView(task: $newTask,handleSubmit: handleSubmitInline, focused: $focus, equals: .inline)
                         }
                     }
-            }
-            .listStyle(.plain)
-            .scrollIndicators(.hidden)
-            .onChange(of: onShowInline) {
-                // Scroll to bottom if trigger add inline
-                if(onShowInline) {
-                    withAnimation {
-                        proxy.scrollTo(bottomID, anchor: .bottom)
+                    .listStyle(.plain)
+                    .frame(height: min(geometry.size.height,CGFloat(todoList.currentTask.count) * 45))
+                    .onChange(of: onShowInline) {
+                        // Scroll to bottom if trigger add inline
+                        if(onShowInline) {
+                            withAnimation {
+                                proxy.scrollTo(bottomID, anchor: .bottom)
+                            }
+                        }
                     }
+                    
+                    // Remaining space of List
+                    Color.clear
+                        .contentShape(Rectangle())  // Make sure it captures taps
+                        .onTapGesture {
+                            if(focus != nil) {
+                                // Trigger handle submit for task inline and edit task here
+
+                                
+                                
+                                // Make unfocus area in bottom of the list
+                                focus = nil
+                                
+                            } else {
+                                // Trigger inline task to add
+                                onShowInline = true
+                            }
+                        }
                 }
             }
         }

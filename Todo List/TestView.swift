@@ -17,23 +17,36 @@ private var onTapChild = false
 
 
 struct TestView: View {
-    @State private var tasks = Array(repeating: "", count: 10)
+    @State private var items = (1...5).map { "Task \($0)" }
     @FocusState private var focusedField: Int?
     
     var body: some View {
-        List {
-            ForEach(tasks.indices, id: \.self) { index in
-                TextField("Enter task", text: $tasks[index])
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .focused($focusedField, equals: index)
-                    .padding(.vertical, 8)
+        GeometryReader { geometry in
+            VStack {
+                List {
+                    ForEach(items.indices, id: \.self) { index in
+                        Text("\(items[index])")
+                            .swipeActions {
+                                Button {
+                                    print("called")
+                                } label: {
+                                    Text("Test")
+                                }
+                            }
+                    }
+                }
+                .frame(height: min(geometry.size.height,CGFloat(items.count) * 50)) // Dynamic height for List
+                
+                // Fill remaining space with tappable area
+                Color.red
+                    .contentShape(Rectangle())  // Make sure it captures taps
+                    .frame(height: min(geometry.size.height,CGFloat(items.count) * 50) == geometry.size.height ? 0 : geometry.size.height )
+                    .onTapGesture {
+                        print("background tap")
+                    }
             }
-            
-            Color.clear.contentShape(Rectangle()).onTapGesture {
-                focusedField = nil
-            }
+            .ignoresSafeArea(.keyboard) // Ensure the background covers under the keyboard
         }
-        .listStyle(.plain) // Optional: Makes the list look cleaner
     }
 }
 
