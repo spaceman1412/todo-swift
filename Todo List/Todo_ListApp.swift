@@ -13,6 +13,16 @@ struct Todo_ListApp: App {
     
     
     var body: some Scene {
+        main
+    }
+    
+    var test: some Scene {
+        WindowGroup {
+            TestView()
+        }
+    }
+    
+    var main: some Scene {
         WindowGroup {
             TodoListView()
         }

@@ -10,12 +10,10 @@ import SwiftUI
 struct TaskItemView: View {
     @Binding var task: Task
     
-    
     var handleSubmit: (_ task: Task) -> Void
     
     //MARK: Pass down focusing state
-    @FocusState.Binding var focused: TodoListView.FocusField?
-    var equals: TodoListView.FocusField
+    @FocusState var focused: Bool
     
     var body: some View {
         HStack {
@@ -31,7 +29,7 @@ struct TaskItemView: View {
         TextField("", text: $task.title)
             .strikethrough(task.isCompleted, color: .gray)
             .foregroundColor(task.isCompleted ? .gray : .primary)
-            .focused($focused, equals: equals)
+            .focused($focused)
             .onSubmit {
                 // Call onSubmit handle here and left the algorithm for the parent
                 handleSubmit(task)

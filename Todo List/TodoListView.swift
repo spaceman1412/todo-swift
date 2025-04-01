@@ -10,42 +10,33 @@ import SwiftUI
 
 
 struct TodoListView: View {
+    enum FocusField: Hashable {
+        case inline, task(id: Task.ID)
+    }
+    
+    @FocusState private var focusInline: Bool
+    @FocusState private var focusTask: Bool
+    @Namespace private var bottomID // A unique identifier for the last item
+    
     @EnvironmentObject var todoList: TodoList
     @State private var newTask = Task(title: "")
     @State private var onShowInline = false
-    {
-        didSet {
-            focus = .inline
-            // Auto reset when toggle onShowInline
-            resetInline()
-        }
-    }
-    
-    enum FocusField {
-        case inline, task
-    }
-    
-    @FocusState private var focus: FocusField?
-    
-    @Namespace private var bottomID // A unique identifier for the last item
-    
-    let tapGesture = TapGesture()
-        .onEnded { _ in
-            print("Menu tapped")
-        }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             header
+                .padding()
             
             title
+                .padding()
             
             taskList
             
             bottomAddButton
+                .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding()
+        
     }
     
     var bottomAddButton: some View {
@@ -90,7 +81,7 @@ struct TodoListView: View {
                 VStack {
                     List {
                         ForEach($todoList.currentTask, id: \.id) { task in
-                            TaskItemView(task: task,handleSubmit: handleSubmitTask, focused: $focus, equals: .task )
+                            TaskItemView(task: task,handleSubmit: handleSubmitTask, focused: _focusTask)
                                 .swipeActions() {
                                     Button(role: .destructive) {
                                         todoList.removeTask(id: task.id)
@@ -108,34 +99,41 @@ struct TodoListView: View {
                         
                         // Inline task
                         if(onShowInline) {
-                            TaskItemView(task: $newTask,handleSubmit: handleSubmitInline, focused: $focus, equals: .inline)
+                            TaskItemView(task: $newTask,handleSubmit: handleSubmitInline, focused: _focusInline)
+                                .id(bottomID)
+                                .onAppear {
+                                    withAnimation {
+                                        proxy.scrollTo(bottomID, anchor: .bottom)
+                                        resetInline()
+                                        
+                                        // Auto focus when appear
+                                        focusInline = true
+                                    }
+                                }
+                                .onDisappear {
+                                    focusInline = false
+                                }
                         }
                     }
                     .listStyle(.plain)
-                    .frame(height: min(geometry.size.height,CGFloat(todoList.currentTask.count) * 45))
-                    .onChange(of: onShowInline) {
-                        // Scroll to bottom if trigger add inline
-                        if(onShowInline) {
-                            withAnimation {
-                                proxy.scrollTo(bottomID, anchor: .bottom)
-                            }
-                        }
-                    }
+                    .frame(height: min(geometry.size.height,CGFloat(todoList.currentTask.count + 1) * 45))
                     
                     // Remaining space of List
                     Color.clear
                         .contentShape(Rectangle())  // Make sure it captures taps
                         .onTapGesture {
-                            if(focus != nil) {
-                                // Trigger handle submit for task inline and edit task here
-
-                                
-                                
-                                // Make unfocus area in bottom of the list
-                                focus = nil
-                                
+                            // Trigger handle when tap outside unfocus for inline and task
+                            if(focusInline) {
+                                // Unfocus inline and add current inline
+                                if(newTask.title != "") {
+                                    todoList.addTask(newTask)
+                                }
+                                onShowInline = false
+                            } else if (focusTask) {
+                                // Unfocus if it on task
+                                focusTask = false
                             } else {
-                                // Trigger inline task to add
+                                // Trigger inline to add new task if it not focus on any textfield
                                 onShowInline = true
                             }
                         }
@@ -158,7 +156,7 @@ struct TodoListView: View {
             todoList.addTask(task)
             // Reset the newTask and refocus help enable smooth flow when adding new task continously
             resetInline()
-            focus = .inline
+            focusInline = true
         } else {
             // If task is empty not add to the task list and turn off the inline
             onShowInline = false
