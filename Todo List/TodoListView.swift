@@ -22,6 +22,10 @@ struct TodoListView: View {
     @State private var newTask = Task(title: "")
     @State private var onShowInline = false
     
+    private var onFocusTextField: Bool {
+        focusTask || focusInline
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             header
@@ -36,7 +40,12 @@ struct TodoListView: View {
                 .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        
+        .onChange(of: focusTask) {
+            print(focusTask)
+        }
+        .onChange(of: focusInline) {
+            print(focusInline)
+        }
     }
     
     var bottomAddButton: some View {
@@ -57,10 +66,23 @@ struct TodoListView: View {
             Spacer()
             
             // Unfocus only appear when textfield on focus
-            if (focusTask || focusInline) {
+            //TODO: The current is not trigger handleSubmit for both insert it too
+            if (onFocusTextField) {
                 Button {
-                    focusTask = false
-                    focusInline = false
+                    if(focusTask) {
+                        // With the focus task we just turn off the focus
+                        focusTask = false
+                    }
+                    if(focusInline) {
+                        if(newTask.title != "") {
+                            // Add new task if the current have value and reset it for next
+                            todoList.addTask(newTask)
+                            resetInline()
+                        }
+                        // Turn off the inline
+                        focusInline = false
+                        onShowInline = false
+                    }
                 } label: {
                     Text("Done").bold()
                 }
@@ -82,6 +104,7 @@ struct TodoListView: View {
             GeometryReader { geometry in
                 VStack {
                     List {
+                        // Task lists
                         ForEach($todoList.currentTask, id: \.id) { task in
                             TaskItemView(task: task,handleSubmit: handleSubmitTask, focused: _focusTask)
                                 .swipeActions() {
@@ -98,6 +121,7 @@ struct TodoListView: View {
                                     }
                                 }
                         }
+                        // Reorder list
                         .onMove { fromOffset, toOffset in
                             todoList.moveTask(from: fromOffset, to: toOffset)
                         }
@@ -115,36 +139,40 @@ struct TodoListView: View {
                                         focusInline = true
                                     }
                                 }
-                                .onDisappear {
-                                    focusInline = false
-                                }
                         }
                     }
                     .listStyle(.plain)
-                    .frame(height: min(geometry.size.height,CGFloat(todoList.currentTask.count + 1) * 45))
+                    .frame(height: min(geometry.size.height,CGFloat(todoList.currentTask.count) * 48))
                     
                     // Remaining space of List
-                    Color.clear
-                        .contentShape(Rectangle())  // Make sure it captures taps
-                        .onTapGesture {
-                            // Trigger handle when tap outside unfocus for inline and task
-                            if(focusInline) {
-                                // Unfocus inline and add current inline
-                                if(newTask.title != "") {
-                                    todoList.addTask(newTask)
-                                }
-                                onShowInline = false
-                            } else if (focusTask) {
-                                // Unfocus if it on task
-                                focusTask = false
-                            } else {
-                                // Trigger inline to add new task if it not focus on any textfield
-                                onShowInline = true
-                            }
-                        }
+                    emptySpace
                 }
             }
         }
+    }
+    
+    private var emptySpace: some View {
+        Color.clear
+            .contentShape(Rectangle())  // Make sure it captures taps
+            .onTapGesture {
+                // Trigger handle when tap outside unfocus for inline and task
+                if(focusInline) {
+                    print("unfocus inline")
+                    // Unfocus inline and add current inline
+                    if(newTask.title != "") {
+                        todoList.addTask(newTask)
+                    }
+                    onShowInline = false
+                } else if (focusTask) {
+                    print("unfocus task")
+                    // Unfocus if it on task
+                    focusTask = false
+                } else {
+                    print("trigger inline")
+                    // Trigger inline to add new task if it not focus on any textfield
+                    onShowInline = true
+                }
+            }
     }
     
     private func handleSubmitTask(_ task: Task) {
@@ -164,7 +192,12 @@ struct TodoListView: View {
             focusInline = true
         } else {
             // If task is empty not add to the task list and turn off the inline
-            onShowInline = false
+            focusInline = false
+            // MARK: So the problem right here is that the when it disapear the focusInline not got trigger yet so i need to unfocus it first then turn it off later
+            // So i fix here tempt by delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                onShowInline = false
+            }
         }
     }
 }
