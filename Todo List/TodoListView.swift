@@ -111,13 +111,13 @@ struct TodoListView: View {
                                     Button(role: .destructive) {
                                         todoList.removeTask(id: task.id)
                                     } label: {
-                                        Label("Delete", systemImage: "trash")
+                                        Image(systemName:"trash")
                                     }
                                     
                                     Button {
                                         print("Edit")
                                     } label: {
-                                        Label("Edit", systemImage: "pencil")
+                                        Image(systemName:"pencil")
                                     }
                                 }
                         }
