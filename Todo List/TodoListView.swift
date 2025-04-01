@@ -25,10 +25,10 @@ struct TodoListView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             header
-                .padding()
+                .padding(.horizontal)
             
             title
-                .padding()
+                .padding(.horizontal)
             
             taskList
             
@@ -56,14 +56,16 @@ struct TodoListView: View {
         HStack {
             Spacer()
             
-            // This will show in case user is on editing textfield
-            //            Button(action: {
-            //                print("Done editing")
-            //            }) {
-            //                Text("Done")
-            //            }
-            //            .font(.title2)
-        }.padding(.horizontal)
+            // Unfocus only appear when textfield on focus
+            if (focusTask || focusInline) {
+                Button {
+                    focusTask = false
+                    focusInline = false
+                } label: {
+                    Text("Done").bold()
+                }
+            }
+        }
     }
     
     var title: some View {
@@ -95,6 +97,9 @@ struct TodoListView: View {
                                         Label("Edit", systemImage: "pencil")
                                     }
                                 }
+                        }
+                        .onMove { fromOffset, toOffset in
+                            todoList.moveTask(from: fromOffset, to: toOffset)
                         }
                         
                         // Inline task
@@ -143,7 +148,7 @@ struct TodoListView: View {
     }
     
     private func handleSubmitTask(_ task: Task) {
-        
+        focusTask = false
     }
     
     private func handleSubmitInline(_ task: Task) {
