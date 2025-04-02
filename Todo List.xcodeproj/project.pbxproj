@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5C3C30E12D93F6E600333030 /* TaskItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C3C30E02D93F6E600333030 /* TaskItemView.swift */; };
+		5C6C26FD2D9CEB9600310480 /* EditableTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6C26FC2D9CEB9600310480 /* EditableTaskView.swift */; };
 		5C9C7DEB2D928CDA00E1828F /* Todo_ListApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9C7DEA2D928CDA00E1828F /* Todo_ListApp.swift */; };
 		5C9C7DED2D928CDA00E1828F /* TodoListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C9C7DEC2D928CDA00E1828F /* TodoListView.swift */; };
 		5C9C7DEF2D928CDB00E1828F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5C9C7DEE2D928CDB00E1828F /* Assets.xcassets */; };
@@ -19,6 +20,7 @@
 
 /* Begin PBXFileReference section */
 		5C3C30E02D93F6E600333030 /* TaskItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskItemView.swift; sourceTree = "<group>"; };
+		5C6C26FC2D9CEB9600310480 /* EditableTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableTaskView.swift; sourceTree = "<group>"; };
 		5C9C7DE72D928CDA00E1828F /* Todo List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Todo List.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C9C7DEA2D928CDA00E1828F /* Todo_ListApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo_ListApp.swift; sourceTree = "<group>"; };
 		5C9C7DEC2D928CDA00E1828F /* TodoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListView.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 				5C9C7DF02D928CDB00E1828F /* Preview Content */,
 				5C9C7DF82D928F6000E1828F /* Task.swift */,
 				5C9C7DFA2D92948400E1828F /* TodoList.swift */,
+				5C6C26FC2D9CEB9600310480 /* EditableTaskView.swift */,
 			);
 			path = "Todo List";
 			sourceTree = "<group>";
@@ -152,6 +155,7 @@
 				5CD088AC2D9A714B00AFA59A /* TestView.swift in Sources */,
 				5C3C30E12D93F6E600333030 /* TaskItemView.swift in Sources */,
 				5C9C7DED2D928CDA00E1828F /* TodoListView.swift in Sources */,
+				5C6C26FD2D9CEB9600310480 /* EditableTaskView.swift in Sources */,
 				5C9C7DF92D928F6000E1828F /* Task.swift in Sources */,
 				5C9C7DEB2D928CDA00E1828F /* Todo_ListApp.swift in Sources */,
 				5C9C7DFB2D92948400E1828F /* TodoList.swift in Sources */,

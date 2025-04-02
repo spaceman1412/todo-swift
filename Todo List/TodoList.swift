@@ -27,6 +27,12 @@ extension Array where Element == Task {
    
 }
 
+extension UUID: Identifiable {
+    public var id: String {
+        self.uuidString
+    }
+}
+
 class TodoList: ObservableObject {
     private var tasks: [Task] {
         get {

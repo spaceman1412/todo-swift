@@ -15,6 +15,6 @@ struct Task: Codable, Identifiable {
     var id = UUID()
     
     enum Priority: Comparable, Codable {
-        case low, medium, high
+        case none,low, medium, high
     }
 }

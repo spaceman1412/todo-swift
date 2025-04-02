@@ -10,7 +10,7 @@ import SwiftUI
 
 
 struct TodoListView: View {
-    enum FocusField: Hashable {
+    private enum FocusField: Hashable {
         case inline, task(id: Task.ID)
     }
     
@@ -21,6 +21,7 @@ struct TodoListView: View {
     @EnvironmentObject var todoList: TodoList
     @State private var newTask = Task(title: "")
     @State private var onShowInline = false
+    @State private var editingTaskId: UUID?
     
     private var onFocusTextField: Bool {
         focusTask || focusInline
@@ -40,11 +41,23 @@ struct TodoListView: View {
                 .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .onChange(of: focusTask) {
-            print(focusTask)
-        }
-        .onChange(of: focusInline) {
-            print(focusInline)
+        .sheet(item: $editingTaskId) { id in
+            // Sheet for edit task
+            if let index = todoList.currentTask.firstIndex(where: {$0.id == id}) {
+                NavigationStack {
+                    EditableTaskView(task: $todoList.currentTask[index])
+                        .navigationTitle("Edit Task")
+                        .toolbar {
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button(action: {
+                                    editingTaskId = nil
+                                }) {
+                                    Text("Done").bold()
+                                }
+                            }
+                        }
+                }
+            }
         }
     }
     
@@ -115,7 +128,7 @@ struct TodoListView: View {
                                     }
                                     
                                     Button {
-                                        print("Edit")
+                                        editingTaskId = task.id
                                     } label: {
                                         Image(systemName:"pencil")
                                     }
