@@ -97,7 +97,7 @@ struct EditableTaskView: View {
     var header: some View {
         HStack {
             Button("Cancel") {
-                
+                onCancel()
             }
             Spacer()
             Button("Done") {
