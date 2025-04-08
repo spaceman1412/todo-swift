@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 extension UserDefaults {
     func tasks(forKey key: String) -> [Task] {

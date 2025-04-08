@@ -11,7 +11,8 @@ struct Task: Codable, Identifiable {
     var title: String
     var isCompleted: Bool = false
     var dueDate: Date?
-    var priority: Priority = .low
+    var dueTime: Date?
+    var priority: Priority = .none
     var id = UUID()
     
     enum Priority: Comparable, Codable {

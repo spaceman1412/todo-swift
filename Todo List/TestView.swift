@@ -15,45 +15,67 @@ struct Item: Identifiable {
 
 private var onTapChild = false
 
-
 struct TestView: View {
-    @State private var isFocus = false
+    enum ToggleWithValue<T> {
+        case off
+        case on(value: T)
+    }
     
+    
+    @State private var isFocus = false
+    @State private var isTimeEnabled: Bool = false
+    @State private var selectedTime: Date = Date()
+    @State private var toggleValue: ToggleWithValue<Date> = .off
+    @State private var date: Date?
+    private var bindingToggle: Binding<Bool> {
+        Binding(get: {
+            switch(toggleValue) {
+            case .off:
+                false
+            case .on(_):
+                true
+            }
+        },set: {
+            if($0) {
+                print("true")
+                toggleValue = .on(value: Date())
+            } else {
+                print("false")
+                toggleValue = .off
+            }
+        })
+    }
     
     var body: some View {
-        CustomTextField(isFocus: isFocus)
+        Form {
+            Toggle(isOn: bindingToggle) {
+                Text("Enable Time Picker")
+            }
+            
+            if case .on = toggleValue {
+                DatePicker("Select Time", selection: Binding(get: {
+                    if case .on(let value) = toggleValue {
+                        return value
+                    } else {
+                        fatalError("The date picker only have value when is on")
+                    }
+                }, set: {
+                    if case .on = toggleValue {
+                        toggleValue = .on(value: $0)
+                    }
+                }), displayedComponents: .hourAndMinute)
+                .datePickerStyle(.wheel) // or .compact, .graphical
+            }
+        }
         
-        Button("aa") {
-            isFocus.toggle()
+        Button {
+            print(toggleValue)
+        } label: {
+            Text("aa")
         }
     }
 }
 
-struct CustomTextField: View {
-    private var isFocus: Bool
-    
-    @FocusState private var isTextFieldFocused
-    
-    init(isFocus: Bool) {
-        self.isFocus = isFocus
-    }
-    
-    var body: some View {
-        TextField("Enter text", text: .constant(""))
-            .focused($isTextFieldFocused)
-            .onChange(of: isFocus) {
-                if(isFocus) {
-                    isTextFieldFocused = true
-                } else {
-                    isTextFieldFocused = false
-                }
-            }
-        
-        if(isFocus) {
-            Text("focus")
-        }
-    }
-}
 
 
 #Preview {

@@ -45,17 +45,14 @@ struct TodoListView: View {
             // Sheet for edit task
             if let index = todoList.currentTask.firstIndex(where: {$0.id == id}) {
                 NavigationStack {
-                    EditableTaskView(task: $todoList.currentTask[index])
-                        .navigationTitle("Edit Task")
-                        .toolbar {
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Button(action: {
-                                    editingTaskId = nil
-                                }) {
-                                    Text("Done").bold()
-                                }
-                            }
-                        }
+                    EditableTaskView(task: $todoList.currentTask[index], onSubmit: { date,time,priority in
+                        todoList.currentTask[index].dueDate = date
+                        todoList.currentTask[index].dueTime = time
+                        todoList.currentTask[index].priority = priority
+                        editingTaskId = nil
+                    }, onCancel: {
+                        editingTaskId = nil
+                    })
                 }
             }
         }
@@ -78,8 +75,7 @@ struct TodoListView: View {
         HStack {
             Spacer()
             
-            // Unfocus only appear when textfield on focus
-            //TODO: The current is not trigger handleSubmit for both insert it too
+            // Unfocus button only appear when textfield on focus
             if (onFocusTextField) {
                 Button {
                     if(focusTask) {
