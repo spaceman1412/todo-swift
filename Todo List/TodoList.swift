@@ -23,15 +23,17 @@ extension UserDefaults {
     }
 }
 
-
-extension Array where Element == Task {
-   
-}
-
 extension UUID: Identifiable {
     public var id: String {
         self.uuidString
     }
+}
+
+enum SortBy: String,CaseIterable, Identifiable {
+    var id: String { rawValue }
+    
+    case manual = "Manual"
+    case smart = "Smart"
 }
 
 class TodoList: ObservableObject {
@@ -51,7 +53,7 @@ class TodoList: ObservableObject {
     // user will access to this variable
     var currentTask: [Task] {
         get {
-            onSorted ? sortedTask : tasks
+            onSorted == .smart ? sortedTask : tasks
         } set {
             tasks = newValue
             objectWillChange.send()
@@ -70,12 +72,8 @@ class TodoList: ObservableObject {
         }
     }
     
-    private var onSorted: Bool = false {
-        // Trigger update for currentTask
-        didSet {
-            objectWillChange.send()
-        }
-    }
+    
+    @Published var onSorted: SortBy = .manual
     
     private var lastIndexTaskId = 0
     
@@ -111,9 +109,5 @@ class TodoList: ObservableObject {
         assert(tasks[index].id == task.id, "Index must be right all the time")
         
         tasks[index] = task
-    }
-    
-    func sortTask() {
-        onSorted = true
     }
 }

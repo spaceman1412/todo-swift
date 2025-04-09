@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Task: Codable, Identifiable {
+struct Task: Codable, Identifiable, Equatable {
     var title: String
     var isCompleted: Bool = false
     var dueDate: Date?

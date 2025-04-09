@@ -46,11 +46,13 @@ struct TodoListView: View {
             if let index = todoList.currentTask.firstIndex(where: {$0.id == id}) {
                 NavigationStack {
                     EditableTaskView(task: $todoList.currentTask[index], onSubmit: { date,time,priority in
+                        // Action when submit done in header
                         todoList.currentTask[index].dueDate = date
                         todoList.currentTask[index].dueTime = time
                         todoList.currentTask[index].priority = priority
                         editingTaskId = nil
                     }, onCancel: {
+                        // Action when submit cancel in header
                         editingTaskId = nil
                     })
                 }
@@ -109,9 +111,20 @@ struct TodoListView: View {
             if(!isEditing) {
                 Menu {
                     Button("Select task", action: {
-                        isEditing = true
+                        withAnimation {
+                            isEditing = true
+                        }
                     })
-                    Button("Sort", action: {})
+                    
+                    Menu {
+                        Picker("", selection: $todoList.onSorted) {
+                            ForEach(SortBy.allCases) { type in
+                                Text(type.rawValue).tag(type)
+                            }
+                        }
+                    } label: {
+                        Label("Sort: \(todoList.onSorted.rawValue)", systemImage: "line.3.horizontal.decrease.circle")
+                    }
                 } label: {
                     Image(systemName: "ellipsis.circle").font(.title2)
                 }
@@ -198,6 +211,7 @@ struct TodoListView: View {
                     .listStyle(.plain)
                     .environment(\.editMode, .constant(isEditing ? .active : .inactive))
                     .frame(height: min(geometry.size.height,CGFloat(todoList.currentTask.count) * 48))
+                    .animation(.default, value: todoList.currentTask)
                     
                     // Remaining space of List
                     emptySpace
