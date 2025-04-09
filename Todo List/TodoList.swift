@@ -89,6 +89,18 @@ class TodoList: ObservableObject {
         }
     }
     
+    func removeTasks(ids: Set<UUID>) {
+        tasks.removeAll { ids.contains($0.id) }
+    }
+    
+    func markTasksCompleted(for ids: Set<UUID>) {
+        for index in tasks.indices {
+            if ids.contains(tasks[index].id) {
+                tasks[index].isCompleted = true
+            }
+        }
+    }
+    
     func moveTask(from: IndexSet, to: Int) {
         tasks.move(fromOffsets: from, toOffset: to)
     }

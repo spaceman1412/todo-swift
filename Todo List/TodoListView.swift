@@ -37,7 +37,7 @@ struct TodoListView: View {
             
             taskList
             
-            bottomAddButton
+            bottomBar
                 .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -58,16 +58,46 @@ struct TodoListView: View {
         }
     }
     
-    var bottomAddButton: some View {
-        HStack {
-            Image(systemName: "plus.circle.fill")
-                .font(.title2)
-            Text("Add Task").bold()
-        }
-        .foregroundStyle(.orange)
-        .onTapGesture {
-            // Trigger show inline to add task
-            onShowInline = true
+    var bottomBar: some View {
+        Group {
+            if(!isEditing) {
+                HStack {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2)
+                    Text("Add Task").bold()
+                }
+                .foregroundStyle(.orange)
+                .onTapGesture {
+                    // Trigger show inline to add task
+                    onShowInline = true
+                }
+            } else {
+                HStack {
+                    // Delete selected item
+                    Button {
+                        withAnimation {
+                            todoList.removeTasks(ids: selectedItems)
+                            isEditing = false
+                        }
+                    } label: {
+                        Image(systemName: "trash.slash")
+                            .font(.title2)
+                            .padding()
+                    }
+                    
+                    // Mark complete selected item
+                    Button {
+                        withAnimation {
+                            todoList.markTasksCompleted(for: selectedItems)
+                            isEditing = false
+                        }
+                    } label: {
+                        Image(systemName: "checkmark.circle")
+                            .font(.title2)
+                            .padding()
+                    }
+                }
+            }
         }
     }
     
