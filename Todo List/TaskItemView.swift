@@ -11,6 +11,7 @@ struct TaskItemView: View {
     @Binding var task: Task
     
     var handleSubmit: (_ task: Task) -> Void
+    var isEditing: Bool
     
     //MARK: Pass down focusing state
     @FocusState var focused: Bool
@@ -55,7 +56,9 @@ struct TaskItemView: View {
         VStack(spacing: 0) {
             HStack {
                 // Toggle marker button
-                markButton
+                if(!isEditing) {
+                    markButton
+                }
                 
                 // Task title with strikethrough if done
                 VStack(alignment: .leading, spacing: 4) {

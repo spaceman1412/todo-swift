@@ -20,6 +20,8 @@ struct TodoListView: View {
     @State private var newTask = Task(title: "")
     @State private var onShowInline = false
     @State private var editingTaskId: UUID?
+    @State private var isEditing: Bool = false
+    @State private var selectedItems: Set<UUID> = []
     
     private var onFocusTextField: Bool {
         focusTask || focusInline
@@ -73,8 +75,20 @@ struct TodoListView: View {
         HStack {
             Spacer()
             
-            // Unfocus button only appear when textfield on focus
-            if (onFocusTextField) {
+            // Menu header button
+            if(!isEditing) {
+                Menu {
+                    Button("Select task", action: {
+                        isEditing = true
+                    })
+                    Button("Sort", action: {})
+                } label: {
+                    Image(systemName: "ellipsis.circle").font(.title2)
+                }
+            }
+            
+            // Unfocus button only appear when textfield on focus and on editing
+            if (onFocusTextField || isEditing) {
                 Button {
                     if(focusTask) {
                         // With the focus task we just turn off the focus
@@ -89,6 +103,9 @@ struct TodoListView: View {
                         // Turn off the inline
                         focusInline = false
                         onShowInline = false
+                    }
+                    if(isEditing) {
+                        isEditing = false
                     }
                 } label: {
                     Text("Done").bold()
@@ -110,10 +127,10 @@ struct TodoListView: View {
         ScrollViewReader { proxy in
             GeometryReader { geometry in
                 VStack {
-                    List {
+                    List(selection: $selectedItems) {
                         // Task lists
                         ForEach($todoList.currentTask, id: \.id) { task in
-                            TaskItemView(task: task,handleSubmit: handleSubmitTask, focused: _focusTask)
+                            TaskItemView(task: task,handleSubmit: handleSubmitTask, isEditing: isEditing, focused: _focusTask)
                                 .swipeActions() {
                                     Button(role: .destructive) {
                                         todoList.removeTask(id: task.id)
@@ -134,8 +151,8 @@ struct TodoListView: View {
                         }
                         
                         // Inline task
-                        if(onShowInline) {
-                            TaskItemView(task: $newTask,handleSubmit: handleSubmitInline, focused: _focusInline)
+                        if(onShowInline && !isEditing) {
+                            TaskItemView(task: $newTask,handleSubmit: handleSubmitInline,isEditing: isEditing, focused: _focusInline)
                                 .id(bottomID)
                                 .onAppear {
                                     withAnimation {
@@ -149,6 +166,7 @@ struct TodoListView: View {
                         }
                     }
                     .listStyle(.plain)
+                    .environment(\.editMode, .constant(isEditing ? .active : .inactive))
                     .frame(height: min(geometry.size.height,CGFloat(todoList.currentTask.count) * 48))
                     
                     // Remaining space of List
