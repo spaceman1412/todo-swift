@@ -80,6 +80,7 @@ struct TaskItemView: View {
                 .foregroundColor(task.isCompleted ? .gray : .primary)
                 .focused($focused)
                 .submitLabel(.return)
+                .disabled(task.isCompleted)
                 .onSubmit {
                     // Call onSubmit handle here and left the algorithm for the parent
                     handleSubmit(task)

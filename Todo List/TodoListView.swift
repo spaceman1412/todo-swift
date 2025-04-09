@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-
-
 struct TodoListView: View {
     private enum FocusField: Hashable {
         case inline, task(id: Task.ID)
