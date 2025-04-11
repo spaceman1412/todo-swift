@@ -169,53 +169,47 @@ struct TodoListView: View {
     var taskList: some View {
         ScrollViewReader { proxy in
             GeometryReader { geometry in
-                VStack {
-                    List(selection: $selectedItems) {
-                        // Task lists
-                        ForEach($todoList.currentTask, id: \.id) { task in
-                            TaskItemView(task: task,handleSubmit: handleSubmitTask, isEditing: isEditing, focused: _focusTask)
-                                .swipeActions() {
-                                    Button(role: .destructive) {
-                                        todoList.removeTask(id: task.id)
-                                    } label: {
-                                        Image(systemName:"trash")
-                                    }
-                                    
-                                    Button {
-                                        editingTaskId = task.id
-                                    } label: {
-                                        Image(systemName:"pencil")
-                                    }
+                List(selection: $selectedItems) {
+                    // Task lists
+                    ForEach($todoList.currentTask, id: \.id) { task in
+                        TaskItemView(task: task,handleSubmit: handleSubmitTask, isEditing: isEditing, focused: _focusTask)
+                            .swipeActions() {
+                                Button(role: .destructive) {
+                                    todoList.removeTask(id: task.id)
+                                } label: {
+                                    Image(systemName:"trash")
                                 }
-                        }
-                        // Reorder list
-                        .onMove { fromOffset, toOffset in
-                            todoList.moveTask(from: fromOffset, to: toOffset)
-                        }
-                        
-                        // Inline task
-                        if(onShowInline && !isEditing) {
-                            TaskItemView(task: $newTask,handleSubmit: handleSubmitInline,isEditing: isEditing, focused: _focusInline)
-                                .id(bottomID)
-                                .onAppear {
-                                    withAnimation {
-                                        proxy.scrollTo(bottomID, anchor: .bottom)
-                                        resetInline()
-                                        
-                                        // Auto focus when appear
-                                        focusInline = true
-                                    }
+                                
+                                Button {
+                                    editingTaskId = task.id
+                                } label: {
+                                    Image(systemName:"pencil")
                                 }
-                        }
+                            }
                     }
-                    .listStyle(.plain)
-                    .environment(\.editMode, .constant(isEditing ? .active : .inactive))
-                    .frame(height: min(geometry.size.height,CGFloat(todoList.currentTask.count) * 48))
-                    .animation(.default, value: todoList.currentTask)
+                    // Reorder list
+                    .onMove { fromOffset, toOffset in
+                        todoList.moveTask(from: fromOffset, to: toOffset)
+                    }
                     
-                    // Remaining space of List
-                    emptySpace
+                    // Inline task
+                    if(onShowInline && !isEditing) {
+                        TaskItemView(task: $newTask,handleSubmit: handleSubmitInline,isEditing: isEditing, focused: _focusInline)
+                            .id(bottomID)
+                            .onAppear {
+                                withAnimation {
+                                    proxy.scrollTo(bottomID, anchor: .bottom)
+                                    resetInline()
+                                    
+                                    // Auto focus when appear
+                                    focusInline = true
+                                }
+                            }
+                    }
                 }
+                .listStyle(.plain)
+                .environment(\.editMode, .constant(isEditing ? .active : .inactive))
+                .animation(.default, value: todoList.currentTask)
             }
         }
     }
