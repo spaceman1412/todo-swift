@@ -87,6 +87,22 @@ class TodoList: ObservableObject {
         }
     }
     
+    func dismissTask(id: UUID) {
+        if let index = tasks.firstIndex(where: {$0.id == id}) {
+            tasks[index].dueDate = nil
+            tasks[index].dueTime = nil
+        }
+    }
+    
+    func markdoneTask(id: UUID) {
+        if let index = tasks.firstIndex(where: {$0.id == id}) {
+            tasks[index].isCompleted = true
+            
+            // Remove notification
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id.uuidString])
+        }
+    }
+    
     func removeTasks(ids: Set<UUID>) {
         tasks.removeAll { ids.contains($0.id) }
     }

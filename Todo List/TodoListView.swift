@@ -23,6 +23,51 @@ struct TodoListView: View {
     @State private var isEditing: Bool = false
     @State private var selectedItems: Set<UUID> = []
     
+    
+    func scheduleNotification(id: String,title: String, date: Date, time: Date?) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.categoryIdentifier = "REMINDER_CATEGORY"
+        
+        let calendar = Calendar.current
+
+        // Extract just the date (midnight time)
+        let dateOnly = calendar.startOfDay(for: date)
+
+        // Extract just the time components (hour, minute, second)
+        let timeComponents: DateComponents? = (time != nil) ? calendar.dateComponents([.hour, .minute, .second], from: time!) : nil
+        
+        
+        let combinedDate = calendar.date(bySettingHour: timeComponents?.hour ?? 0,
+                                         minute: timeComponents?.minute ?? 0,
+                                         second: timeComponents?.second ?? 0,
+                                         of: dateOnly)
+        
+        if let dateVal = combinedDate {
+            let triggerDate = Calendar.current.dateComponents(
+                [.year, .month, .day, .hour, .minute, .second],
+                from: dateVal
+            )
+            
+            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
+            
+            let request = UNNotificationRequest(
+                identifier: id,
+                content: content,
+                trigger: trigger
+            )
+            
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    print("Notification scheduling error: \(error.localizedDescription)")
+                } else {
+                    print("Notification scheduled for \(dateVal)")
+                }
+            }
+        }
+    }
+
+    
     private var onFocusTextField: Bool {
         focusTask || focusInline
     }
@@ -50,6 +95,15 @@ struct TodoListView: View {
                         todoList.currentTask[index].dueDate = date
                         todoList.currentTask[index].dueTime = time
                         todoList.currentTask[index].priority = priority
+                        
+                        // Set up notification if have date
+                        if let dateVal = date {
+                            scheduleNotification(id: id.uuidString, title: todoList.currentTask[index].title, date: dateVal, time: time)
+                        } else {
+                            // Cancel the current notification if have
+                            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id.uuidString])
+                        }
+                        
                         editingTaskId = nil
                     }, onCancel: {
                         // Action when submit cancel in header
@@ -62,7 +116,7 @@ struct TodoListView: View {
     
     var bottomBar: some View {
         Group {
-            if(!isEditing) {
+            if(!isEditing && !onFocusTextField) {
                 HStack {
                     Image(systemName: "plus.circle.fill")
                         .font(.title2)
@@ -74,31 +128,41 @@ struct TodoListView: View {
                     onShowInline = true
                 }
             } else {
-                HStack {
-                    // Delete selected item
-                    Button {
-                        withAnimation {
-                            todoList.removeTasks(ids: selectedItems)
-                            isEditing = false
-                        }
-                    } label: {
-                        Image(systemName: "trash.slash")
-                            .font(.title2)
-                            .padding()
-                    }
-                    
-                    // Mark complete selected item
-                    Button {
-                        withAnimation {
-                            todoList.markTasksCompleted(for: selectedItems)
-                            isEditing = false
-                        }
-                    } label: {
-                        Image(systemName: "checkmark.circle")
-                            .font(.title2)
-                            .padding()
-                    }
+                if(isEditing) {
+                    editingBottomBar
                 }
+                
+//                if(onFocusTextField) {
+//                    focusingBottomBar
+//                }
+            }
+        }
+    }
+    
+    var editingBottomBar: some View {
+        HStack {
+            // Delete selected item
+            Button {
+                withAnimation {
+                    todoList.removeTasks(ids: selectedItems)
+                    isEditing = false
+                }
+            } label: {
+                Image(systemName: "trash.slash")
+                    .font(.title2)
+                    .padding()
+            }
+            
+            // Mark complete selected item
+            Button {
+                withAnimation {
+                    todoList.markTasksCompleted(for: selectedItems)
+                    isEditing = false
+                }
+            } label: {
+                Image(systemName: "checkmark.circle")
+                    .font(.title2)
+                    .padding()
             }
         }
     }

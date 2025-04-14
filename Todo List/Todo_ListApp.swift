@@ -10,7 +10,39 @@ import SwiftUI
 @main
 struct Todo_ListApp: App {
     @StateObject private var todoList = TodoList()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
+    func notificationSetup() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            if granted {
+                print("Permission granted ✅")
+                setupCustomNotification()
+            } else {
+                print("Permission denied ❌")
+            }
+        }
+    }
+
+    func setupCustomNotification() {
+        let dissmissAction = UNNotificationAction(identifier: "DISMISS_ACTION",
+              title: "Dismiss",
+              options: [])
+        let markdoneAction = UNNotificationAction(identifier: "MARK_DONE_ACTION",
+              title: "Markdone",
+              options: [])
+        // Define the notification type
+        let reminderCategory =
+              UNNotificationCategory(identifier: "REMINDER_CATEGORY",
+              actions: [dissmissAction, markdoneAction],
+              intentIdentifiers: [],
+              hiddenPreviewsBodyPlaceholder: "",
+              options: .customDismissAction)
+        // Register the notification type.
+        let notificationCenter = UNUserNotificationCenter.current()
+        notificationCenter.setNotificationCategories([reminderCategory])
+        print("setup notification custom")
+    }
+
     
     var body: some Scene {
         main
@@ -25,6 +57,10 @@ struct Todo_ListApp: App {
     var main: some Scene {
         WindowGroup {
             TodoListView()
+                .onAppear {
+                    notificationSetup()
+                    appDelegate.todoList = todoList
+                }
         }
         .environmentObject(todoList)
     }
