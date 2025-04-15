@@ -269,6 +269,15 @@ struct TodoListView: View {
                                     focusInline = true
                                 }
                             }
+                    } else {
+                        // Hidden row for trigger inline task add
+                        Rectangle()
+                            .fill(Color.clear)
+                            .contentShape(Rectangle()) // Makes the transparent area tappable
+                            .listRowSeparator(.hidden, edges: .bottom)
+                            .onTapGesture {
+                                onShowInline = true
+                            }
                     }
                 }
                 .listStyle(.plain)
@@ -278,29 +287,29 @@ struct TodoListView: View {
         }
     }
     
-    private var emptySpace: some View {
-        Color.clear
-            .contentShape(Rectangle())  // Make sure it captures taps
-            .onTapGesture {
-                // Trigger handle when tap outside unfocus for inline and task
-                if(focusInline) {
-                    print("unfocus inline")
-                    // Unfocus inline and add current inline
-                    if(newTask.title != "") {
-                        todoList.addTask(newTask)
-                    }
-                    onShowInline = false
-                } else if (focusTask) {
-                    print("unfocus task")
-                    // Unfocus if it on task
-                    focusTask = false
-                } else {
-                    print("trigger inline")
-                    // Trigger inline to add new task if it not focus on any textfield
-                    onShowInline = true
-                }
-            }
-    }
+//    private var emptySpace: some View {
+//        Color.clear
+//            .contentShape(Rectangle())  // Make sure it captures taps
+//            .onTapGesture {
+//                // Trigger handle when tap outside unfocus for inline and task
+//                if(focusInline) {
+//                    print("unfocus inline")
+//                    // Unfocus inline and add current inline
+//                    if(newTask.title != "") {
+//                        todoList.addTask(newTask)
+//                    }
+//                    onShowInline = false
+//                } else if (focusTask) {
+//                    print("unfocus task")
+//                    // Unfocus if it on task
+//                    focusTask = false
+//                } else {
+//                    print("trigger inline")
+//                    // Trigger inline to add new task if it not focus on any textfield
+//                    onShowInline = true
+//                }
+//            }
+//    }
     
     private func handleSubmitTask(_ task: Task) {
         focusTask = false
