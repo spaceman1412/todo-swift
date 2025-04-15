@@ -7,6 +7,7 @@ A simple, elegant SwiftUI-based to-do list app inspired by Apple’s Reminder ap
 - Add, edit, remove tasks
 - Mark tasks as complete/incomplete
 - Set due date and priority
+- Reminder functionality with date and time
 - Push notifications with custom actions like “Mark Done” and “Dismiss”
 - Streamline continuous adding task with enter to add new task
 - Triggerable inline task by click button add task or tap last row of list
