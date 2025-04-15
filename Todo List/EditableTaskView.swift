@@ -126,6 +126,7 @@ struct EditableTaskView: View {
 
     var body: some View {
         header
+        
         Form {
             Section {
                 TextField("",text: $task.title)
@@ -155,6 +156,12 @@ struct EditableTaskView: View {
                         Text("Time")
                     }
                 }
+                .onChange(of: toggleTime.isOn.wrappedValue) {
+                    // If on and the toggleDate is off turn it on
+                    if(toggleTime.isOn.wrappedValue == true && toggleDate.isOn.wrappedValue == false) {
+                        toggleDate.isOn.wrappedValue = true
+                    }
+                }
                 
                 if(toggleTime.isOn.wrappedValue) {
                     DatePicker("Time", selection: toggleTime.value, displayedComponents: .hourAndMinute)
@@ -170,12 +177,6 @@ struct EditableTaskView: View {
                     Text("Medium").tag(Task.Priority.medium)
                     Text("High").tag(Task.Priority.high)
                 }
-            }
-            
-            Button("Test") {
-                print(toggleDate)
-                print(toggleTime)
-                print(task.priority)
             }
         }
     }
