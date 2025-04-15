@@ -22,7 +22,7 @@
 /* Begin PBXFileReference section */
 		5C3C30E02D93F6E600333030 /* TaskItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskItemView.swift; sourceTree = "<group>"; };
 		5C6C26FC2D9CEB9600310480 /* EditableTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableTaskView.swift; sourceTree = "<group>"; };
-		5C7954732DAE3C77005C6250 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		5C7954742DAE3CD6005C6250 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		5C9C7DE72D928CDA00E1828F /* Todo List.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Todo List.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C9C7DEA2D928CDA00E1828F /* Todo_ListApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Todo_ListApp.swift; sourceTree = "<group>"; };
 		5C9C7DEC2D928CDA00E1828F /* TodoListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodoListView.swift; sourceTree = "<group>"; };
@@ -48,6 +48,7 @@
 		5C9C7DDE2D928CDA00E1828F = {
 			isa = PBXGroup;
 			children = (
+				5C7954742DAE3CD6005C6250 /* README.md */,
 				5C9C7DE92D928CDA00E1828F /* Todo List */,
 				5C9C7DE82D928CDA00E1828F /* Products */,
 			);
@@ -74,7 +75,6 @@
 				5C9C7DF82D928F6000E1828F /* Task.swift */,
 				5C9C7DFA2D92948400E1828F /* TodoList.swift */,
 				5C6C26FC2D9CEB9600310480 /* EditableTaskView.swift */,
-				5C7954732DAE3C77005C6250 /* README.md */,
 			);
 			path = "Todo List";
 			sourceTree = "<group>";
