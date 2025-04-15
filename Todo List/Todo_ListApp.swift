@@ -9,9 +9,8 @@ import SwiftUI
 
 @main
 struct Todo_ListApp: App {
-    @StateObject private var todoList = TodoList()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+
     func notificationSetup() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if granted {
@@ -59,9 +58,8 @@ struct Todo_ListApp: App {
             TodoListView()
                 .onAppear {
                     notificationSetup()
-                    appDelegate.todoList = todoList
                 }
         }
-        .environmentObject(todoList)
+        .environmentObject(appDelegate.todoList)
     }
 }

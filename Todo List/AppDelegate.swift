@@ -8,19 +8,13 @@ import Foundation
 import UIKit
 import SwiftUI
 
-class AppDelegate: NSObject, UIApplicationDelegate {
-    var todoList: TodoList
+class AppDelegate: NSObject, UIApplicationDelegate, ObservableObject {
+    @Published var todoList = TodoList()
     
     func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self
         return true
     }
-    
-    init(todoList: TodoList) {
-        self.todoList = todoList
-    }
-    
-
 }
 
 extension AppDelegate:  UNUserNotificationCenterDelegate {
